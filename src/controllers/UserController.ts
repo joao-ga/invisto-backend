@@ -8,43 +8,47 @@ class UserController {
         const data_user = req.body;
 
         try {
-            console.log(data_user);
-
-            //enviar para o servidor os dados do usuário via socket
+            //criar conexao com o socket
             const client = new net.Socket()
             client.connect(8000, 'localhost', () => {
-                // Enviar dados do usuário em formato JSON
-                client.write(JSON.stringify(data_user));
+                //enviar os dados via string para o servidor
+                client.write(JSON.stringify(data_user) + '\n');
             });
 
             client.on('data', async (data) => {
                 const response = JSON.parse(data.toString());
     
-                // Verificar se a resposta do servidor é válida
+                //valida se a resposta foi erro
                 if (response.status === 'error') {
+                    //envia mensagem de erro
                     res.status(400).send({ error: response.message });
+                    //fecha conexao com o servidor
                     client.destroy(); 
                     return;
                 }
     
-                // Se a resposta for válida, criptografar a senha e salvar no banco
+                //se a resposta for positiva, criptografa a senha 
                 const hashedPassword = await bcrypt.hash(data_user.password, 10);
+                // cria uma instacia para o usuário
                 const user = new User({
                     ...data_user,
                     password: hashedPassword
                 });
-    
+                //salva no banco de dados e manda uma resposta positiva
                 await user.save();
                 res.status(201).send({ message: "Usuário Cadastrado" });
+                // fecha a conexao do servidor
                 client.destroy();
             });
     
+            // erro do socket
             client.on('error', (err) => {
                 console.error('Socket Error:', err);
                 res.status(500).send({ error: "Erro ao conectar ao servidor Java" });
             });
 
         } catch (e) {
+            //erro na api
             console.error(e);
             res.status(500).send({ error: "Erro" });
         }

@@ -2,6 +2,7 @@ import mongoose from "../database/connDB";
 
 const {Schema} = mongoose
 
+// model do usuário, define os campos do documento
 const User = mongoose.model(
     'User',
     new Schema({
