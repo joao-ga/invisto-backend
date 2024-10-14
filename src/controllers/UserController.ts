@@ -29,6 +29,7 @@ class UserController {
     
                 //se a resposta for positiva, criptografa a senha 
                 const hashedPassword = await bcrypt.hash(data_user.password, 10);
+                delete data_user.confirmedPassword;
                 // cria uma instacia para o usuário
                 const user = new User({
                     ...data_user,
