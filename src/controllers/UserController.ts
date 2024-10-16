@@ -7,6 +7,14 @@ class UserController {
     static async registration(req: Request, res: Response): Promise<void> {
         const data_user = req.body;
 
+        // verificar se o email do usuário já existe no banco de dados
+        const otherUser = await User.findOne({email: data_user.email});
+
+        if(otherUser != undefined) {
+            res.status(400).send({ error: 'Esse e-mail já está sendo usado!' });
+            return 
+        }
+
         try {
             //criar conexao com o socket
             const client = new net.Socket()
