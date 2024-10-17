@@ -41,6 +41,7 @@ class UserController {
                 // cria uma instacia para o usuário
                 const user = new User({
                     ...data_user,
+                    coins: 0,
                     password: hashedPassword
                 });
                 //salva no banco de dados e manda uma resposta positiva
