@@ -1,8 +1,9 @@
 import express, {Request, Response} from 'express';
-import router from './routes/UserRoutes';
+import userRouter from './routes/UserRoutes';
 import stockRouter from './routes/StockRoutes';
 import cors from 'cors';
 import mongoose from './database/connDB';
+import quizRouter from './routes/QuizRoutes';
 
 const app = express();
 
@@ -12,9 +13,9 @@ app.use(cors());
 app.use(express.json());
 const PORT = process.env.PORT || 5001;
 
-const userRouter = router;
 app.use('/users', userRouter);
 app.use('/stocks', stockRouter);
+app.use('/quizs', quizRouter)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('INVISTO APP');
