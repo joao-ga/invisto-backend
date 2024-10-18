@@ -33,6 +33,10 @@ const User = mongoose.model(
         phone: {
             type: String,
             require: true
+        },
+        coins: {
+            type: Number,
+            require: true
         }
     },
     {timestamps: true}
