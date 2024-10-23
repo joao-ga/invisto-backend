@@ -1,6 +1,7 @@
 import express, {Request, Response} from 'express';
 import userRouter from './routes/UserRoutes';
 import stockRouter from './routes/StockRoutes';
+import lessonRouter from './routes/LessonRoutes';
 import cors from 'cors';
 import mongoose from './database/connDB';
 import quizRouter from './routes/QuizRoutes';
@@ -15,7 +16,8 @@ const PORT = process.env.PORT || 5001;
 
 app.use('/users', userRouter);
 app.use('/stocks', stockRouter);
-app.use('/quizzes', quizRouter)
+app.use('/quizzes', quizRouter);
+app.use('/lessons', lessonRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('INVISTO APP');
