@@ -3,6 +3,8 @@ import UserController from "../controllers/UserController";
 const router = Router()
 
 // rota de registro de usuário
-router.post('/registration', UserController.registration)
+router.post('/registration', UserController.registration);
+router.post('/addcoins', UserController.addCoin);
+router.post('/adduid', UserController.addUidUser);
 
 export default router;
