@@ -63,6 +63,56 @@ class UserController {
             res.status(500).send({ error: "Erro" });
         }
     }
+
+    static async addCoin(req: Request, res: Response): Promise<void> {
+        const data = req.body;
+
+        const uid = data.uid;
+        const coins = data.coins;
+
+        try {
+           
+            const updatedUser = await User.findOneAndUpdate(
+                { uid: uid },
+                { $set: { coins: coins } },
+                { new: true }
+            );
+    
+            if (!updatedUser) {
+                res.status(404).send('Usuário não encontrado');
+            } else {
+                res.status(200).send('Moeda atualizada com sucesso');
+            }
+    
+        } catch(e) {
+
+        }
+    }
+
+    //ataulizar user para adicionar o uid do usuário em seu documento
+    static async addUidUser(req: Request, res: Response): Promise<void> {
+        const data = req.body;
+        const uid =  data.uid;
+        const email = data.email;
+
+        try {
+
+            const addUid = await User.findOneAndUpdate(
+                {email: email},
+                {$set: { uid: uid }},
+                {new: true}
+            )
+
+            if (!addUid) {
+                res.status(404).send('Usuário não encontrado');
+            } else {
+                res.status(200).send('Uid adicionado')
+            }
+
+        } catch(e) {
+            console.log(e)
+        }
+    }
 }
 
 export default UserController;
