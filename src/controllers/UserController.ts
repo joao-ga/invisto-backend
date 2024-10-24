@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import User from "../models/User";
-import bcrypt from 'bcrypt';
 import net from 'net';
 
 class UserController {
@@ -36,13 +35,12 @@ class UserController {
                 }
     
                 //se a resposta for positiva, criptografa a senha 
-                const hashedPassword = await bcrypt.hash(data_user.password, 10);
                 delete data_user.confirmedPassword;
+                delete data_user.password;
                 // cria uma instacia para o usuário
                 const user = new User({
                     ...data_user,
                     coins: 0,
-                    password: hashedPassword
                 });
                 //salva no banco de dados e manda uma resposta positiva
                 await user.save();
@@ -111,6 +109,22 @@ class UserController {
 
         } catch(e) {
             console.log(e)
+        }
+    }
+
+    static async validateUser(req: Request, res: Response) {
+        const email = req.body.email;
+        console.log(req.body)
+        console.log(email)
+
+        const user = await User.findOne({email: email})
+
+        console.log(user)
+
+        if(user) {
+            res.status(201).send({user: user})
+        } else {
+            res.status(400).send({message: 'Usuário não encontrado'})
         }
     }
 }
