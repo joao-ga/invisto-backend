@@ -114,12 +114,7 @@ class UserController {
 
     static async validateUser(req: Request, res: Response) {
         const email = req.body.email;
-        console.log(req.body)
-        console.log(email)
-
         const user = await User.findOne({email: email})
-
-        console.log(user)
 
         if(user) {
             res.status(201).send({user: user})
