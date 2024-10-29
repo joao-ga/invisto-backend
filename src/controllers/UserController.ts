@@ -72,7 +72,7 @@ class UserController {
            
             const updatedUser = await User.findOneAndUpdate(
                 { uid: uid },
-                { $set: { coins: coins } },
+                { $inc: { coins: coins } },
                 { new: true }
             );
     
