@@ -122,6 +122,23 @@ class UserController {
             res.status(400).send({message: 'Usuário não encontrado'})
         }
     }
+
+    static async getUserCoin(req:Request, res:Response) {
+        const uid = req.body.uid;
+        try {
+            const user = await User.findOne({uid: uid});
+            if(user) {
+                const coins = user.coins;
+                res.status(201).send({coin: coins})
+            } else {
+                res.status(400).send({message: 'Usuário não encontrado'})
+            }
+
+        } catch(e) {
+            console.log(e)
+        }
+    
+    }
 }
 
 export default UserController;
