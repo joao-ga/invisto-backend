@@ -37,6 +37,9 @@ const User = mongoose.model(
         coins: {
             type: Number,
             require: true
+        },
+        uid:{
+            type: String
         }
     },
     {timestamps: true}
