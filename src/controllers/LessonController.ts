@@ -36,6 +36,22 @@ class LessonController {
             console.log(e)
         }
     }
-}
+
+    static async getAllLesson(req: Request, res: Response) {
+        try {
+            const lessons = await Lesson.find();
+
+            if(!lessons) {
+                res.status(400).send({error: 'Aulas não disponível'});
+                return;
+            } 
+
+            res.status(200).send({lessons: lessons});
+
+        } catch(e) {
+            console.log(e)
+        }
+    }
+ }
 
 export default LessonController;
