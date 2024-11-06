@@ -38,8 +38,18 @@ const User = mongoose.model(
             type: Number,
             require: true
         },
+        property: {
+            type: Number,
+            require: true
+        },
         uid:{
             type: String
+        },
+        ranking_id:{
+            type: Number
+        },
+        my_investments:{
+            type: Array
         }
     },
     {timestamps: true}
