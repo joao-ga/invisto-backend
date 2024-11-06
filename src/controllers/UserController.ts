@@ -41,6 +41,7 @@ class UserController {
                 const user = new User({
                     ...data_user,
                     coins: 0,
+                    property:0
                 });
                 //salva no banco de dados e manda uma resposta positiva
                 await user.save();
@@ -123,13 +124,18 @@ class UserController {
         }
     }
 
-    static async getUserCoin(req:Request, res:Response) {
+    static async getUserData(req:Request, res:Response) {
         const uid = req.body.uid;
         try {
             const user = await User.findOne({uid: uid});
             if(user) {
+                const data = {
+                    coin: user.coins,
+                    property: user.property,
+                    ranking_id: user.ranking_id
+                }
                 const coins = user.coins;
-                res.status(201).send({coin: coins})
+                res.status(201).send({data: data})
             } else {
                 res.status(400).send({message: 'Usuário não encontrado'})
             }
