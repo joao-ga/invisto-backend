@@ -28,7 +28,7 @@ class RankingController {
         const ranking_code = req.body.ranking;
     
         try {
-            const ranking = await Ranking.findOne({ ranking_code });
+            const ranking = await Ranking.findOne({ id: ranking_code });
     
             if (!ranking) {
                 return res.status(404).send({ message: "Ranking não encontrado" });
@@ -44,29 +44,33 @@ class RankingController {
 
     static async getRanking(req: Request, res: Response): Promise<any> {
         const ranking_id = req.body.ranking;
-    
+        let participants_ranking = [];
+
         try {
-            const ranking = await Ranking.findOne({ ranking_id });
-    
+            const ranking = await Ranking.findOne({ id: ranking_id });
+            
             if (!ranking) {
                 return res.status(404).json({ message: "Ranking não encontrado" });
             }
-    
+
             const participants = ranking.participants;
-
-            const userIds = participants.map(participant => participant.uid);
             
-            const users = await User.find({ uid: { $in: userIds } });
+            for (const participant of participants) {
+                const user = await User.findOne({ uid: participant });
     
-            const participants_ranking = participants
-            .map(participant => {
-                const user = users.find(user => user.uid === participant.uid);
-                return user ? { name: user.name, coins: user.coins } : null;
-            });
+                if (user) {
+                    const data = {
+                        name: user.name,
+                        coins: user.coins,
+                    };
 
+                    participants_ranking.push(data);
+                }
+            }
+            
             participants_ranking.sort((a: any, b: any) => b.coins - a.coins);
-    
-            return res.status(200).send(participants_ranking);
+
+            return res.status(200).json(participants_ranking);
     
         } catch (e) {
             console.error(e);
