@@ -7,6 +7,6 @@ router.post('/registration', UserController.registration);
 router.post('/addcoins', UserController.addCoin);
 router.post('/adduid', UserController.addUidUser);
 router.post('/validateUser', UserController.validateUser);
-router.post('/getusercoins', UserController.getUserData);
+router.post('/getuserdata', UserController.getUserData);
 
 export default router;
