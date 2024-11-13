@@ -38,10 +38,6 @@ const User = mongoose.model(
             type: Number,
             require: true
         },
-        property: {
-            type: Number,
-            require: true
-        },
         uid:{
             type: String
         },

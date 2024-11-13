@@ -131,7 +131,6 @@ class UserController {
             if(user) {
                 const data = {
                     coin: user.coins,
-                    property: user.property,
                     ranking_id: user.ranking_id
                 }
                 const coins = user.coins;
