@@ -151,13 +151,13 @@ class UserController {
 }
 
 function formatDate(date: string): string {
-    // Verifica se a data tem exatamente 8 dígitos
+    // verifica se a data tem exatamente 8 dígitos
     if (/^\d{8}$/.test(date)) {
-        // Divide a string em partes: dia, mês e ano
+        // divide a string em partes: dia, mês e ano
         const day = date.substring(0, 2);
         const month = date.substring(2, 4);
         const year = date.substring(4, 8);
-        // Retorna no formato DD/MM/YYYY
+        // retorna no formato DD/MM/YYYY
         return `${day}/${month}/${year}`;
     } else {
         throw new Error("Data inválida. Certifique-se de usar o formato DDMMYYYY.");
