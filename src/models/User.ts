@@ -44,7 +44,7 @@ const User = mongoose.model(
         ranking_id:{
             type: Number
         },
-        my_investments:{
+        stocks:{
             type: Array
         }
     },
