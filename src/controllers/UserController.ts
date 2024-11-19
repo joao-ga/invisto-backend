@@ -6,6 +6,9 @@ class UserController {
     static async registration(req: Request, res: Response): Promise<void> {
         const data_user = req.body;
 
+        data_user.name = data_user.name.trim();
+        data_user.birth = formatDate(data_user.birth);
+
         // verificar se o email do usuário já existe no banco de dados
         const otherUser = await User.findOne({email: data_user.email});
 
@@ -37,6 +40,7 @@ class UserController {
                 //se a resposta for positiva, criptografa a senha 
                 delete data_user.confirmedPassword;
                 delete data_user.password;
+
                 // cria uma instacia para o usuário
                 const user = new User({
                     ...data_user,
@@ -143,6 +147,20 @@ class UserController {
             console.log(e)
         }
     
+    }
+}
+
+function formatDate(date: string): string {
+    // Verifica se a data tem exatamente 8 dígitos
+    if (/^\d{8}$/.test(date)) {
+        // Divide a string em partes: dia, mês e ano
+        const day = date.substring(0, 2);
+        const month = date.substring(2, 4);
+        const year = date.substring(4, 8);
+        // Retorna no formato DD/MM/YYYY
+        return `${day}/${month}/${year}`;
+    } else {
+        throw new Error("Data inválida. Certifique-se de usar o formato DDMMYYYY.");
     }
 }
 
