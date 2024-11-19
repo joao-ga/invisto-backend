@@ -134,6 +134,7 @@ class UserController {
             const user = await User.findOne({uid: uid});
             if(user) {
                 const data = {
+                    stocks: user.stocks,
                     coin: user.coins,
                     ranking_id: user.ranking_id
                 }
