@@ -8,5 +8,7 @@ router.post('/addcoins', UserController.addCoin);
 router.post('/adduid', UserController.addUidUser);
 router.post('/validateUser', UserController.validateUser);
 router.post('/getuserdata', UserController.getUserData);
+router.post('/buyStock', UserController.buyStock);
+router.post('/sellStock', UserController.sellStock);
 
 export default router;

@@ -149,6 +149,57 @@ class UserController {
         }
     
     }
+
+    static async buyStock(req: Request, res: Response): Promise<void> {
+        const data = req.body;
+
+        const uid = data.uid;
+        const code = data.code;
+
+        try {
+            const updateUserStocks = await User.findOneAndUpdate(
+                { uid: uid },
+                { $addToSet: { stocks: code } },
+                { new: true, upsert: false }
+            );
+    
+            if (!updateUserStocks) {
+                res.status(404).send('Usuário não encontrado');
+            } else {
+                res.status(200).send('Stock comprada com sucesso');
+                console.error("Stock comprada com sucesso: " + code + "Response: "+ updateUserStocks);
+            }
+    
+        } catch(e) {
+            console.error("Erro ao adicionar stock:", e);
+            res.status(404).send('Erro ao comprar stock: ' + e);
+        }
+    }
+
+    static async sellStock(req: Request, res: Response): Promise<void> {
+        const data = req.body;
+
+        const uid = data.uid;
+        const code = data.code;
+
+        try {
+            const updateUserStocks = await User.findOneAndUpdate(
+                { uid: uid },
+                { $pull: { stocks: code } },
+                { new: true }
+            );
+    
+            if (!updateUserStocks) {
+                res.status(404).send('Usuário não encontrado');
+            } else {
+                res.status(200).send('Stock vendida com sucesso');
+            }
+    
+        } catch(e) {
+            console.error("Erro ao remover stock:", e);
+            res.status(404).send('Erro ao vender stock: ' + e);
+        }
+    }
 }
 
 function formatDate(date: string): string {
