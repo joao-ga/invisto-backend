@@ -4,7 +4,7 @@ import Stock from "../models/Stock";
 
 class StockController {
     static async getLastPrice(req: Request, res: Response): Promise<void> {
-        const tickers = req.query.tickers;
+        const tickers = req.body.code;
         const TIINGO_API_TOKEN = '8bacea9e47b9acc8eeda429a88e2edaba0cf0fad';
 
         const url = `https://api.tiingo.com/iex/?tickers=${tickers}&token=${TIINGO_API_TOKEN}`;
