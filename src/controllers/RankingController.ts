@@ -17,6 +17,12 @@ class RankingController {
         try {
             await ranking.save();
 
+            await User.findOneAndUpdate(
+                {uid: uid},
+                {$set: { ranking_id: id }},
+                {new: true}
+            )
+
             res.status(201).send({message: 'Ranking criado'})
         } catch(e) {
             console.log(e)
@@ -35,6 +41,12 @@ class RankingController {
             }
             ranking.participants.push(uid);
             await ranking.save();
+
+            await User.findOneAndUpdate(
+                {uid: uid},
+                {$set: { ranking_id: ranking_code }},
+                {new: true}
+            )
     
             res.status(200).send({ message: "Usuário adicionado ao ranking com sucesso" });
         } catch (e) {
@@ -70,7 +82,7 @@ class RankingController {
             
             participants_ranking.sort((a: any, b: any) => b.coins - a.coins);
 
-            return res.status(200).json(participants_ranking);
+            return res.status(200).send({data: participants_ranking});
     
         } catch (e) {
             console.error(e);
