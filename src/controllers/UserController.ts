@@ -151,48 +151,117 @@ class UserController {
     }
 
     static async buyStock(req: Request, res: Response): Promise<void> {
-        const data = req.body;
-
-        const uid = data.uid;
-        const code = data.code;
-
+        const { uid, code, lastPrice, quantity } = req.body;
+    
         try {
+            const totalPrice = quantity * Number(lastPrice);
+    
+            const user = await User.findOne({ uid: uid });
+    
+            if (!user) {
+                res.status(404).send('Usuário não encontrado');
+                return 
+            }
+    
+            const coins = user.coins || 0;
+    
+            if (totalPrice > coins) {
+                res.status(400).send('Moedas indisponíveis para operação!');
+                return;
+            }
+    
+            const realPrice = coins - totalPrice;
+    
+            const stockInfo = {
+                lastPrice: Number(lastPrice),
+                code: code,
+                quantity: quantity,
+            };
+    
             const updateUserStocks = await User.findOneAndUpdate(
                 { uid: uid },
-                { $addToSet: { stocks: code } },
+                { $addToSet: { stocks: stockInfo }, $set: { coins: realPrice } },
                 { new: true, upsert: false }
             );
     
             if (!updateUserStocks) {
                 res.status(404).send('Usuário não encontrado');
-            } else {
-                res.status(200).send('Stock comprada com sucesso');
-                console.error("Stock comprada com sucesso: " + code + "Response: "+ updateUserStocks);
+                return;
             }
     
-        } catch(e) {
+            console.log("Stock comprada com sucesso: " + code + " Response: " + updateUserStocks);
+            res.status(200).send('Stock comprada com sucesso');
+        } catch (e) {
             console.error("Erro ao adicionar stock:", e);
-            res.status(404).send('Erro ao comprar stock: ' + e);
+            res.status(500).send('Erro ao comprar stock: ' + e);
         }
     }
+        
 
     static async sellStock(req: Request, res: Response): Promise<void> {
         const data = req.body;
 
         const uid = data.uid;
         const code = data.code;
+        const actualPrice = Number(data.actualPrice);
+        const qtdSell = data.qtdSell;
+        let oldStocks;
+        
+        try {          
+            const user = await User.findOne({ uid: uid });
 
-        try {
+            const stocks = user?.stocks;
+            const userCoins = user?.coins;
+
+            for(let i = 0; i < stocks!.length; i++) {
+                if(stocks![i].code === code) {
+                    oldStocks = stocks![i];
+                }
+            }
+
+            if(qtdSell > oldStocks.quantity) {
+                res.status(404).send('Quantidade inválida');
+                return;
+            }
+ 
+            const finalPrice = (actualPrice*qtdSell) - (oldStocks.lastPrice * qtdSell);
+            const finalQuantity = oldStocks.quantity - qtdSell;
+            const total = userCoins! + finalPrice
+
+            if(finalQuantity === 0) {
+                const updateUserStocks = await User.findOneAndUpdate(
+                    { uid: uid },
+                    { $pull: { stocks: code }, $set: { coins: total } },
+                    { new: true }
+                );
+
+                if (!updateUserStocks) {
+                    res.status(404).send('Usuário não encontrado');
+                    return
+                } else {
+                    res.status(200).send('Stock vendida com sucesso');
+                    return
+                }
+            }
+
             const updateUserStocks = await User.findOneAndUpdate(
-                { uid: uid },
-                { $pull: { stocks: code } },
+                { uid: uid, "stocks.code": code },
+                {
+                    $set: {
+                        "stocks.$.quantity": finalQuantity,
+                        "stocks.$.lastPrice": oldStocks.lastPrice,
+                        coins: total
+                    }
+                },
                 { new: true }
             );
     
             if (!updateUserStocks) {
                 res.status(404).send('Usuário não encontrado');
+                return
             } else {
                 res.status(200).send('Stock vendida com sucesso');
+                return
             }
     
         } catch(e) {
