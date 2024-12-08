@@ -223,7 +223,7 @@ class UserController {
                 return;
             }
  
-            const finalPrice = (actualPrice*qtdSell) + (oldStocks.lastPrice * qtdSell);
+            const finalPrice = ((actualPrice*qtdSell) - (oldStocks.lastPrice * qtdSell)) + (oldStocks.lastPrice*qtdSell);
             const finalQuantity = oldStocks.quantity - qtdSell;
             const total = userCoins! + finalPrice
             if(finalQuantity === 0) {
