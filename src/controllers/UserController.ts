@@ -223,14 +223,15 @@ class UserController {
                 return;
             }
  
-            const finalPrice = (actualPrice*qtdSell) - (oldStocks.lastPrice * qtdSell);
+            const finalPrice = (actualPrice*qtdSell) + (oldStocks.lastPrice * qtdSell);
             const finalQuantity = oldStocks.quantity - qtdSell;
+            console.log(finalPrice)
             const total = userCoins! + finalPrice
-
+            console.log(total)
             if(finalQuantity === 0) {
                 const updateUserStocks = await User.findOneAndUpdate(
                     { uid: uid },
-                    { $pull: { stocks: code }, $set: { coins: total } },
+                    { $pull: { stocks: { code: code } }, $set: { coins: total } },
                     { new: true }
                 );
 
