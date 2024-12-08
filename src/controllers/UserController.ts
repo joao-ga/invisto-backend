@@ -44,7 +44,7 @@ class UserController {
                 // cria uma instacia para o usuário
                 const user = new User({
                     ...data_user,
-                    coins: 0,
+                    coins: 0.0,
                     property:0
                 });
                 //salva no banco de dados e manda uma resposta positiva
@@ -128,26 +128,25 @@ class UserController {
         }
     }
 
-    static async getUserData(req:Request, res:Response) {
+    static async getUserData(req: Request, res: Response) {
         const uid = req.body.uid;
         try {
-            const user = await User.findOne({uid: uid});
-            if(user) {
+            const user = await User.findOne({ uid: uid });
+            if (user) {
+                const coins = user.coins != null ? parseFloat(user.coins.toString()) : 0.0;
                 const data = {
                     stocks: user.stocks,
-                    coin: user.coins,
-                    ranking_id: user.ranking_id
-                }
-                const coins = user.coins;
-                res.status(201).send({data: data})
+                    coin: coins,
+                    ranking_id: user.ranking_id,
+                };
+                res.status(201).send({ data: data });
             } else {
-                res.status(400).send({message: 'Usuário não encontrado'})
+                res.status(400).send({ message: 'Usuário não encontrado' });
             }
-
-        } catch(e) {
-            console.log(e)
+        } catch (e) {
+            console.error(e);
+            res.status(500).send({ message: 'Erro interno do servidor' });
         }
-    
     }
 
     static async buyStock(req: Request, res: Response): Promise<void> {
@@ -281,7 +280,7 @@ function formatDate(date: string): string {
         // retorna no formato DD/MM/YYYY
         return `${day}/${month}/${year}`;
     } else {
-        throw new Error("Data inválida. Certifique-se de usar o formato DDMMYYYY.");
+        return date;
     }
 }
 
