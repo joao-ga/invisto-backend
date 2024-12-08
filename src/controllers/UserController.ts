@@ -225,9 +225,7 @@ class UserController {
  
             const finalPrice = (actualPrice*qtdSell) + (oldStocks.lastPrice * qtdSell);
             const finalQuantity = oldStocks.quantity - qtdSell;
-            console.log(finalPrice)
             const total = userCoins! + finalPrice
-            console.log(total)
             if(finalQuantity === 0) {
                 const updateUserStocks = await User.findOneAndUpdate(
                     { uid: uid },
